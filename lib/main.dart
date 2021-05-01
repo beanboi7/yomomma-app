@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:yomomma/api.dart';
 void main(){
   runApp(YoApp());
 }
@@ -14,8 +15,20 @@ class YoApp extends StatefulWidget {
 }
 
 class _YoAppState extends State<YoApp> {
+  Future<RandomJokes> futureJokes;
 
   @override
+  void initState(){
+    super.initState();
+    futureJokes = fetchJoke();
+  }
+
+  @protected
+  @mustCallSuper
+  void didChangeDependencies(){
+  }
+
+
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
@@ -58,15 +71,32 @@ class _YoAppState extends State<YoApp> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Card', style: TextStyle(color: Colors.white.withOpacity(0.75))),
-                                Icon(Icons.credit_card_sharp, color: Colors.white.withOpacity(0.75),)
+                                Text('Styleee', style: TextStyle(color: Colors.white.withOpacity(0.75))),
+                                Icon(Icons.wb_incandescent, color: Colors.white.withOpacity(0.75),)
                               ],
                             ),
-                            Spacer(),
+                            //Spacer(),
+                            FutureBuilder(
+                              future: futureJokes,
+                              builder: (context, snapshot){
+                                // ignore: missing_return
+                                if (snapshot.connectionState == ConnectionState.done && snapshot.data != null){
+                                  return Row(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                      Center(child: Center(child: Text( snapshot.data, style: TextStyle(color: Colors.white.withOpacity(0.75))))) ,
+                                    ],
+                                  );
+                                } else if (snapshot.hasError){
+                                    return Text("${snapshot.error}");
+                                }
+                                return CircularProgressIndicator();
+                              }
+                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('TL Templates', style: TextStyle(color: Colors.white.withOpacity(0.75))),
+                                Text('YoMomma', style: TextStyle(color: Colors.white.withOpacity(0.75))),
                                 Text('07/25', style: TextStyle(color: Colors.white.withOpacity(0.75))),
                               ],
                             ),
