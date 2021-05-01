@@ -2,6 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:yomomma/api.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+
+import 'account.dart';
+import 'search.dart';
+
 void main(){
   runApp(YoApp());
 }
@@ -16,6 +21,10 @@ class YoApp extends StatefulWidget {
 
 class _YoAppState extends State<YoApp> {
   Future<RandomJokes> futureJokes;
+  int page = 1;
+
+  SearchPage search = SearchPage();
+  AccountPage account = AccountPage();
 
   @override
   void initState(){
@@ -32,7 +41,12 @@ class _YoAppState extends State<YoApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: Container(
+        appBar: AppBar(
+          title: Text("Yomomma"),
+          centerTitle: true,
+        ),
+        body:
+        (page == 0) ? Container(
           decoration: BoxDecoration(
             image: DecorationImage(
               fit: BoxFit.cover, image: AssetImage('assets/images/katana.jpg'),
@@ -71,7 +85,7 @@ class _YoAppState extends State<YoApp> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Styleee', style: TextStyle(color: Colors.white.withOpacity(0.75))),
+                                Text('ur mum', style: TextStyle(color: Colors.white.withOpacity(0.75))),
                                 Icon(Icons.wb_incandescent, color: Colors.white.withOpacity(0.75),)
                               ],
                             ),
@@ -84,7 +98,18 @@ class _YoAppState extends State<YoApp> {
                                   return Row(
                                     crossAxisAlignment: CrossAxisAlignment.stretch,
                                     children: [
-                                      Center(child: Center(child: Text( snapshot.data, style: TextStyle(color: Colors.white.withOpacity(0.75))))) ,
+                                      Center(
+                                          child: Center(
+                                              child: Text(
+                                                  snapshot.data,
+                                                  style: TextStyle(
+                                                      color: Colors.white.withOpacity(0.75),
+                                                      fontSize: 14.0,
+                                                      fontWeight: FontWeight.bold,
+                                                  ),
+                                              )
+                                          ),
+                                      ) ,
                                     ],
                                   );
                                 } else if (snapshot.hasError){
@@ -114,6 +139,25 @@ class _YoAppState extends State<YoApp> {
               ),
             ),
           ),
+        ) :
+        (page == 1) ? search :
+        (page ==2) ? account : Container(),
+        bottomNavigationBar: CurvedNavigationBar(
+          height: 50.0,
+          index: 0,
+          items: <Widget>[
+            Icon(Icons.home, size: 30.0, color: Colors.white70),
+            Icon(Icons.search_rounded, size: 30.0, color: Colors.white70),
+            Icon(Icons.account_circle_rounded , size: 30.0, color: Colors.white70),
+          ],
+          color: Colors.blueGrey[800],
+          buttonBackgroundColor: Colors.blueGrey[400],
+          backgroundColor: Colors.blueGrey[900],
+          onTap: (index){
+            setState(() {
+              page = index;
+            });
+          },
         ),
       ),
     );
