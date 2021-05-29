@@ -1,13 +1,12 @@
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
-class AccountPage extends StatefulWidget {
+class About extends StatefulWidget {
   @override
-  _AccountPageState createState() => _AccountPageState();
+  _AboutState createState() => _AboutState();
 }
 
-class _AccountPageState extends State<AccountPage> {
+class _AboutState extends State<About> {
   @override
   Widget build(BuildContext context) {
     return Container(
