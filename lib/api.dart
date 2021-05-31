@@ -7,10 +7,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 const baseUrl = "https://yomomma-api.herokuapp.com/jokes";
+String query;
 class RandomJokes{
   final String joke;
   RandomJokes({@required this.joke});
-
   factory RandomJokes.fromJson(Map<String, dynamic> json){
     return RandomJokes(
       joke: json['joke'],
@@ -19,27 +19,28 @@ class RandomJokes{
 }
 
 class QueryJokes{
-  final String qjoke;
-  QueryJokes({@required this.qjoke});
+  final String qJoke;
+  QueryJokes({@required this.qJoke});
 
   factory QueryJokes.fromJson(Map<String, dynamic> json){
     return QueryJokes(
-      qjoke: json['results']
+      qJoke: json['results']
     );
   }
 }
 
-Future<QueryJokes> searchJoke() async {
+Future<QueryJokes> searchJoke(query) async {
+  assert(query != null);
   var dio = Dio();
-  final response = await dio.get("htttps://yomomma-api.herokuapp.com/search");
+  final response = await dio.get("https://yomomma-api.herokuapp.com/search?query="+"$query");
   print("mate it works!" + response.data['results']);
 
   if(response.statusCode == 200){
     print("GET: /search works");
     return QueryJokes.fromJson(jsonDecode(response.data['results']));
   } else if(response.statusCode == 200 && response.data == null){
-    print("GEt: No results found for the given query");
-    return QueryJokes.fromJson(jsonDecode(response.data['results']));
+      print("GET: No results found for the given query");
+      return QueryJokes.fromJson(jsonDecode(response.data['results']));
   } else {
     throw Exception("Failed to get your query");
   }
