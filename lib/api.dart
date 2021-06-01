@@ -8,28 +8,28 @@ import 'package:flutter/material.dart';
 
 const baseUrl = "https://yomomma-api.herokuapp.com/jokes";
 String query;
-class RandomJokes{
+class RandomJokesModel{
   final String joke;
-  RandomJokes({@required this.joke});
-  factory RandomJokes.fromJson(Map<String, dynamic> json){
-    return RandomJokes(
+  RandomJokesModel({@required this.joke});
+  factory RandomJokesModel.fromJson(Map<String, dynamic> json){
+    return RandomJokesModel(
       joke: json['joke'],
     );
   }
 }
 
-class QueryJokes{
+class QueryJokesModel{
   final String qJoke;
-  QueryJokes({@required this.qJoke});
+  QueryJokesModel({@required this.qJoke});
 
-  factory QueryJokes.fromJson(Map<String, dynamic> json){
-    return QueryJokes(
+  factory QueryJokesModel.fromJson(Map<String, dynamic> json){
+    return QueryJokesModel(
       qJoke: json['results']
     );
   }
 }
 
-Future<QueryJokes> searchJoke(query) async {
+Future<QueryJokesModel> searchJoke(query) async {
   assert(query != null);
   var dio = Dio();
   final response = await dio.get("https://yomomma-api.herokuapp.com/search?query="+"$query");
@@ -37,23 +37,23 @@ Future<QueryJokes> searchJoke(query) async {
 
   if(response.statusCode == 200){
     print("GET: /search works");
-    return QueryJokes.fromJson(jsonDecode(response.data['results']));
+    return QueryJokesModel.fromJson(jsonDecode(response.data['results']));
   } else if(response.statusCode == 200 && response.data == null){
       print("GET: No results found for the given query");
-      return QueryJokes.fromJson(jsonDecode(response.data['results']));
+      return QueryJokesModel.fromJson(jsonDecode(response.data['results']));
   } else {
     throw Exception("Failed to get your query");
   }
 }
 
-Future<RandomJokes> fetchJoke() async{
+Future<RandomJokesModel> fetchJoke() async{
   var dio = Dio();
 
   final response = await dio.get(baseUrl);
   // print("mate it works! " + response.data['joke']);
   if (response.statusCode == 200){
     print("GET: /jokes works");
-    return RandomJokes.fromJson(jsonDecode(response.data['joke']));
+    return RandomJokesModel.fromJson(jsonDecode(response.data['joke']));
   } else {
     throw Exception("Failed to load jokes");
   }
