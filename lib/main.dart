@@ -4,6 +4,7 @@ import 'package:yomomma/account.dart';
 
 import 'package:yomomma/home.dart';
 import 'package:yomomma/search.dart';
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 
 void main() {
   return runApp(Root());
@@ -13,9 +14,16 @@ class Root extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
-      theme: CupertinoThemeData(brightness: Brightness.dark),
+      theme: CupertinoThemeData(brightness: Brightness.light),
       debugShowCheckedModeBanner: false,
-      home: Yo(),
+      title: 'YoMomma',
+      home: AnimatedSplashScreen(
+        nextScreen: Yo(),
+        backgroundColor: Colors.blue[200],
+        curve: Curves.easeIn,
+        splash: CupertinoIcons.home,
+        splashTransition: SplashTransition.fadeTransition,
+      ),
     );
   }
 }
