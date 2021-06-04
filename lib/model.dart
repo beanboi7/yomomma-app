@@ -16,10 +16,12 @@ class Joke {
 
   String toRawJson() => json.encode(toJson());
 
-  factory Joke.fromJson(Map<String, dynamic> json) => Joke(
-    result: json["result"],
-    joke: json["joke"],
-  );
+  factory Joke.fromJson(Map<String, dynamic> json){
+    return Joke(
+        result: json["result"],
+        joke: json["joke"],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     "result": result,

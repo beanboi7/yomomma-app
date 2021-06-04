@@ -2,7 +2,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:yomomma/model.dart';
 import 'api.dart';
 
 class Home extends StatefulWidget {
@@ -11,52 +10,72 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  String joke = '';
+  Future<dynamic> joke;
+  Future futureObj;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    futureObj = endPoint();
+  }
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: FutureBuilder(
-          future: randomJoke(),
-          builder: (BuildContext context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              joke = snapshot.data;
-              return Container(
-                height: 100.0,
-                width: 100.0,
-                child: Column(
-                  children: <Widget>[
-                    Expanded(
-                      flex: 2,
-                      child: Text(
-                        '$joke',
-                        style: TextStyle(fontStyle: FontStyle.italic, fontSize: 15.0),
+      child: Column(
+        children: [
+          Spacer(),
+          Expanded(
+            flex: 2,
+            child: FutureBuilder(
+                future: futureObj,
+                builder: (BuildContext context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    // joke = snapshot.data;
+                    return Container(
+                      height: 250.0,
+                      width: 300.0,
+                      child: Column(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 2,
+                            child: Text(
+                              joke == null ? 'YO momma' : "$joke",
+                              style: TextStyle(fontStyle: FontStyle.italic, fontSize: 15.0),
+                            ),
+                          ),
+                          Spacer(),
+                        ],
                       ),
-                    ),
-                    Spacer(),
-                    Expanded(
-                      flex: 1,
-                      child: CupertinoButton(
-                        color: Colors.black,
-                        child: Center(
-                          child: Icon(Icons.refresh),
-                          heightFactor: 40.0,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            joke = randomJoke();
-                          });
-                        },
-                      ),
-                    )
-                  ],
+                    );
+                  }
+                  else {
+                    return loader();
+                  }
+                }
+            ),
+          ),
+          Spacer(),
+          Expanded(
+            flex: 1,
+            child: Container(
+              height: 25.0,
+              width: 100.0,
+              child: CupertinoButton(
+                color: Colors.black,
+                child: Center(
+                  child: Icon(Icons.refresh),
                 ),
-              );
-            }
-            else {
-              return loader();
-            }
-          }
+                onPressed: () {
+                  setState(() {
+                    joke = randomJoke();
+                  });
+                },
+              ),
+            ),
+          ),
+          Spacer(),
+        ],
       ),
     );
   }

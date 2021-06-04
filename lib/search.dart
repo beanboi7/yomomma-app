@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'api.dart';
 
@@ -9,12 +10,20 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
+  Future<dynamic> queried;
+  Future futureSearchObj;
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    futureSearchObj = endPoint();
+  }
 
   @override
   Widget build(BuildContext context) {
     final textController = TextEditingController();
-    searchJoke(query);
     return Center(
       child: Form(
         key: _formKey,
@@ -30,9 +39,30 @@ class _SearchState extends State<Search> {
                     return 'enter a valid keyword';
                   }
                   value = textController.text;
-                  query = value;
-                  return null;
+                  queried = value as Future;
                   },
+              ),
+            ),
+            Expanded(
+              child: FutureBuilder(
+                future: futureSearchObj,
+                builder: (BuildContext context, snapshot){
+                  if (snapshot.connectionState == ConnectionState.done){
+                    return Container(
+                      height: 250,
+                      width: 300,
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            '$queried',
+                            style: TextStyle(fontStyle: FontStyle.italic, fontSize: 15.0),
+                          ),
+                        ],
+                      ),
+                    );
+                  };
+                  return loader();
+                },
               ),
             ),
             Expanded(
@@ -46,6 +76,7 @@ class _SearchState extends State<Search> {
                       onPressed: (){
                         if(_formKey.currentState.validate()){
                           _showDialog();
+                          queried = searchJoke(queried);
                         }
                       },
                     ),
@@ -75,6 +106,13 @@ class _SearchState extends State<Search> {
             )
           ],
         )
+    );
+  }
+
+  loader() {
+    return SpinKitCubeGrid(
+      size: 25.0,
+      color: Colors.blue[200],
     );
   }
 }
